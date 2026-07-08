@@ -22,6 +22,8 @@ namespace homing {
 void clearHoming() {
     ESP_LOGD("Homing", "Homing started");
 
+    pinMode(12, INPUT_PULLUP); // 确保限位开关引脚有上拉电阻
+
     // Set homing active flag for LED indication
     setHomingActive(true);
 
@@ -35,9 +37,11 @@ void clearHoming() {
     // Clear the stored values.
     calibration.measuredStrokeSteps = 0;
 
+    /*
     // Recalibrate the current sensor offset.
     calibration.currentSensorOffset = (getAnalogAveragePercent(
         SampleOnPin{Pins::Driver::currentSensorPin, 1000}));
+    */
 }
 
 static void startHomingTask(void *pvParameters) {
@@ -90,6 +94,8 @@ static void startHomingTask(void *pvParameters) {
             break;
         }
 
+        // 【删除/注释掉原有的电流检测】
+        /*
         // measure the current analog value.
         float current = getAnalogAveragePercent(
                             SampleOnPin{Pins::Driver::currentSensorPin, 50}) -
@@ -108,16 +114,38 @@ static void startHomingTask(void *pvParameters) {
         stepper->stopMove();
 
         stepper->setSpeedInHz(250_mm);
+        */
+
+        // 【替换为机械限位开关检测】
+        // 读取引脚 12，如果是低电平(LOW)，说明碰到了限位器
+        bool isLimitSwitchPressed = (digitalRead(Pins::Driver::limitSwitchPin) == LOW); 
+
+        if (!isLimitSwitchPressed) { 
+            vTaskDelay(10);  // 没碰到就继续等待
+            continue;
+        }
+
+        // 【以下为触发限位后的处理逻辑】
+        ESP_LOGD("Homing", "Limit switch pressed!"); 
+        stepper->stopMove(); 
+        stepper->setSpeedInHz(250_mm);
+
         // step away from the hard stop, with your hands in the air!
         int32_t currentPosition = stepper->getCurrentPosition();
         stepper->moveTo(currentPosition - sign * Config::Driver::homingOffsetMn,
                         true);
 
+        /*
         // measure and save the current position
         calibration.measuredStrokeSteps =
             homing_logic::calculateMeasuredStroke(
                 stepper->getCurrentPosition(),
                 Config::Driver::maxStrokeSteps);
+        */
+
+        // 强制指定当前位置和总行程
+        // 既然只有单向限位，我们直接欺骗系统，告诉它已经测满了 140mm 轨道
+        calibration.measuredStrokeSteps = Config::Driver::maxStrokeSteps;
 
         stepper->setCurrentPosition(0);
         stepper->forceStopAndNewPosition(0);
