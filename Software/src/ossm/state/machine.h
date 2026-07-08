@@ -24,9 +24,9 @@ struct OSSMStateMachine {
             *"idle"_s + done / drawHello = "homing"_s,
 #endif
 
-            "homing"_s / startHoming = "homing.forward"_s,
-            "homing.forward"_s + error = "error"_s,
-            "homing.forward"_s + done / startHoming = "homing.backward"_s,
+            "homing"_s / startHoming = "homing.backward"_s,
+            //"homing.forward"_s + error = "error"_s,
+            //"homing.forward"_s + done / startHoming = "homing.backward"_s,
             "homing.backward"_s + error = "error"_s,
             "homing.backward"_s + done[(isStrokeTooShort)] = "error"_s,
             "homing.backward"_s + done[isFirstHomed] / setHomed = "menu"_s,
