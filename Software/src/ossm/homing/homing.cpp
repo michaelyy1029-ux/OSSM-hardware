@@ -128,7 +128,7 @@ static void startHomingTask(void *pvParameters) {
         // 【以下为触发限位后的处理逻辑】
         ESP_LOGD("Homing", "Limit switch pressed!"); 
         stepper->stopMove(); 
-        stepper->setSpeedInHz(50_mm);
+        stepper->setSpeedInHz(20_mm);
 
         // step away from the hard stop, with your hands in the air!
         int32_t currentPosition = stepper->getCurrentPosition();
