@@ -69,7 +69,7 @@ static void startHomingTask(void *pvParameters) {
     auto isInCorrectState = []() {
         // Add any states that you want to support here.
         return stateMachine->is("homing"_s) ||
-               stateMachine->is("homing.forward"_s) ||
+               // stateMachine->is("homing.forward"_s) ||
                stateMachine->is("homing.backward"_s);
     };
 
@@ -128,7 +128,7 @@ static void startHomingTask(void *pvParameters) {
         // 【以下为触发限位后的处理逻辑】
         ESP_LOGD("Homing", "Limit switch pressed!"); 
         stepper->stopMove(); 
-        stepper->setSpeedInHz(250_mm);
+        stepper->setSpeedInHz(50_mm);
 
         // step away from the hard stop, with your hands in the air!
         int32_t currentPosition = stepper->getCurrentPosition();
