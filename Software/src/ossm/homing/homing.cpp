@@ -147,14 +147,8 @@ static void startHomingTask(void *pvParameters) {
         // 既然只有单向限位，我们直接欺骗系统，告诉它已经测满了 140mm 轨道
         calibration.measuredStrokeSteps = Config::Driver::maxStrokeSteps;
 
-        /*
         stepper->setCurrentPosition(0);
         stepper->forceStopAndNewPosition(0);
-        */
-
-        // 【关键修正】我们在轨道最后方，坐标必须是 maxStrokeSteps，绝对不能是 0！
-        stepper->setCurrentPosition(Config::Driver::maxStrokeSteps);
-        stepper->forceStopAndNewPosition(Config::Driver::maxStrokeSteps);
 
         int32_t goToPosition = homing_logic::calculatePostHomingPosition(
             sign, calibration.measuredStrokeSteps,
