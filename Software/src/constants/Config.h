@@ -21,9 +21,9 @@ namespace Config {
         constexpr float pulleyToothCount = 20.0f;
         // Set to your belt pitch (Distance between two teeth on the belt) (E.g.
         // GT2 belt has 2mm tooth pitch)
-        constexpr float beltPitchMm = 2.0f;
+        constexpr float beltPitchMm = 5.0f;
         // Top linear speed of the device.
-        constexpr float motorStepPerRevolution = 800.0f;
+        constexpr float motorStepPerRevolution = 1600.0f;
         // Top acceleration of the device in mm/s/s
         constexpr float maxAcceleration = 50000.0f;
         // Number of steps to move the arm 1mm
@@ -56,11 +56,11 @@ namespace Config {
         // belt attachments subtract the linear block holder length (75mm on
         // OSSM) Recommended to also subtract e.g. 20mm to keep the backstop
         // well away from the device.
-        constexpr float maxStrokeSteps = 500.0_mm;
+        constexpr float maxStrokeSteps = 140.0_mm;
 
         // If the stroke length is less than this value, then the stroke is
         // likely the result of a poor homing.
-        constexpr float minStrokeLengthMm = 50.0_mm;
+        constexpr float minStrokeLengthMm = 30.0_mm;
 
         // Applied offset after homing process.
         constexpr float homingOffsetMn = 10_mm;
